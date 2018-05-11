@@ -94,6 +94,8 @@ class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
 
 public class MainActivity extends AppCompatActivity {
 
+    //vakereonovakere
+
     private ChatDatabase db;
     private Button login_btn;
     private EditText user_name;
