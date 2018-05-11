@@ -45,6 +45,7 @@ class User {
     public User(int id, String firstName, String lastName, String phoneNumber, String password) {
         this.id = id;
         this.firstName = firstName;
+
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.password = password;
@@ -280,7 +281,11 @@ class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
 
 public class MainActivity extends AppCompatActivity {
 
+
     private final int CHATACTIVITY_BACK_RESULT = 0X01;
+    //vakereonovakere
+    //nokiso
+    //siwakere
 
     private ChatDatabase db;
     private Button login_btn;
