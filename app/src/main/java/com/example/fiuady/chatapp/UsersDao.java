@@ -26,8 +26,19 @@ public interface UsersDao {
     String getLastNameById(int id);
 
     @Query("SELECT phone_number FROM users WHERE id = :id")
-    int getPhoneNumberById(int id);
+    String getPhoneNumberById(int id);
 
+    @Query("SELECT password FROM users WHERE id = :id")
+    String getPasswordById(int id);
+
+    @Query("SELECT id FROM users WHERE first_name = :first_name")
+    int getIdByFirstName(String first_name);
+
+    @Query("SELECT id FROM users WHERE last_name + first_name = :complete_name")
+    int getIdByCompleteName(String complete_name);
+
+    @Query("SELECT id FROM users WHERE phone_number = :phone_number")
+    int getIdByPhoneNumber(String phone_number);
 
     @Query("SELECT MAX(id) FROM users")
     int getMaxId();
@@ -38,3 +49,4 @@ public interface UsersDao {
     @Update
     void UpdateUser(UsersTable user);
 }
+
