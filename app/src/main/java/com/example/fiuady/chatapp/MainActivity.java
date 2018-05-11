@@ -95,6 +95,7 @@ class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
 public class MainActivity extends AppCompatActivity {
 
     //vakereonovakere
+    //nokiso
 
     private ChatDatabase db;
     private Button login_btn;
