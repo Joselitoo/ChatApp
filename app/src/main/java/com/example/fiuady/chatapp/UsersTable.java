@@ -19,13 +19,14 @@ public class UsersTable {
     private String lastName;
 
     @ColumnInfo (name = "phone_number")
-    private int phoneNumber;
+    @NonNull
+    private String phoneNumber;
 
     @ColumnInfo (name = "password")
     @NonNull
     private String password;
 
-    public UsersTable(int id, @NonNull String firstName, @NonNull String lastName, int phoneNumber, @NonNull String password) {
+    public UsersTable(int id, @NonNull String firstName, @NonNull String lastName, @NonNull String phoneNumber, @NonNull String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -48,7 +49,7 @@ public class UsersTable {
         return lastName;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
@@ -71,7 +72,7 @@ public class UsersTable {
         this.lastName = lastName;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(@NonNull String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
