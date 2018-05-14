@@ -102,16 +102,16 @@ public class NavigationMenu extends AppCompatActivity {
                         i,
                         db.groupsDao().getNameById(i),
                         db.groupMessagesDao().getLastMessageByGroupId(i),
-                        "db.groupMessagesDao().getLastDateByGroupId(i)"));
+                        db.groupMessagesDao().getLastDateByGroupId(i)));
             }
         }
         //Sorting by lastDate of lastMessage received or sent
-//        Collections.sort(rv_groups_data, new Comparator<Group>() {
-//            @Override
-//            public int compare(Group o1, Group o2) {
-//                return o2.getDate().compareTo(o1.getDate());
-//            }
-//        });
+        Collections.sort(rv_groups_data, new Comparator<Group>() {
+            @Override
+            public int compare(Group o1, Group o2) {
+                return o2.getDate().compareTo(o1.getDate());
+            }
+        });
 
         groupsAdapter = new GroupsAdapter(rv_groups_data);
         recyclerContainer.setAdapter(groupsAdapter);
@@ -130,7 +130,6 @@ public class NavigationMenu extends AppCompatActivity {
                         db.usersDao().getPhoneNumberById(i),
                         db.usersDao().getPasswordById(i)));
             }
-
         }
         usersAdapter = new UsersAdapter((rv_users_data));
         recyclerContainer.setAdapter(usersAdapter);

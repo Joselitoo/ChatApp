@@ -37,6 +37,8 @@ public interface GroupMessagesDao {
     @Query("SELECT date FROM group_messages WHERE sender_id = :sender_id ORDER BY id DESC LIMIT 1")
     String getLastDateOfSenderId(int sender_id);
 
+    @Query("SELECT first_name FROM users WHERE id = :sender_id")
+    String getUserNameById(int sender_id);
 
     @Insert
     void InsertMessage(GroupMessagesTable groupMessage);
