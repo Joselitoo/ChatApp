@@ -119,6 +119,7 @@ class Chat {
     private String firstName;
     private String lastName;
     private String lastMessage;
+    private String date;
     //private String phoneNumber;
     //private String password;
 
@@ -126,13 +127,14 @@ class Chat {
     public String getFirstName(){ return firstName;}
     public String getLastName(){ return lastName;}
     public String getLastMessage(){ return lastMessage;}
+    public String getDate() { return date; }
 
-
-    public Chat(int contactId, String firstName, String lastName, String lastMessage) {
+    public Chat(int contactId, String firstName, String lastName, String lastMessage, String date) {
         this.contactId = contactId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.lastMessage = lastMessage;
+        this.date = date;
     }
 }
 
@@ -144,6 +146,7 @@ class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
         private TextView rvFirstName;
         private TextView rvLastName;
         private TextView rvLastMessage;
+        private TextView rvDate;
         private Chat chat;
         private Context context;
 
@@ -153,6 +156,7 @@ class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
             rvFirstName = itemView.findViewById(R.id.first_name_text);
             rvLastName = itemView.findViewById(R.id.last_name_text);
             rvLastMessage = itemView.findViewById(R.id.last_message_text);
+            rvDate = itemView.findViewById(R.id.date_text);
 
             context  = itemView.getContext();
             itemView.setClickable(true);
@@ -173,6 +177,7 @@ class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
             rvFirstName.setText(chats.getFirstName());
             rvLastName.setText(chats.getLastName());
             rvLastMessage.setText(chats.getLastMessage());
+            rvDate.setText(chats.getDate());
         }
 
     }
@@ -207,17 +212,20 @@ class Message{
     private String message;
     private int sender_id;
     private int receiver_id;
+    private String date;
 
     public int getId() { return id; }
     public String getMessage() { return message; }
     public int getSender_id() { return sender_id; }
     public int getReceiver_id() { return receiver_id; }
+    public String getDate() { return date; }
 
-    public Message(int id, String message, int sender_id, int receiver_id) {
+    public Message(int id, String message, int sender_id, int receiver_id, String date) {
         this.id = id;
         this.message = message;
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
+        this.date = date;
     }
 }
 
@@ -226,6 +234,7 @@ class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView rvMessage;
+        private TextView rvDate;
         private ImageView rvBubble;
         private Message message;
         private Context context;
@@ -235,12 +244,14 @@ class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
             super(itemView);
             context  = itemView.getContext();
             rvMessage = itemView.findViewById(R.id.rv_message_tv);
+            rvDate = itemView.findViewById(R.id.rv_date_tv);
             rvBubble = itemView.findViewById(R.id.chat_bubble);
         }
 
         public void bind(Message messages) {
             this.message = messages;
             rvMessage.setText(messages.getMessage());
+            rvDate.setText(messages.getDate());
             if(message.getSender_id() == ActualUser.id){
                 //rvMessage.setTextColor(Color.BLUE);
                 rvMessage.setGravity(Gravity.RIGHT);
@@ -275,6 +286,104 @@ class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return messages.size();
+    }
+}
+
+class Group{
+    private int id;
+    private String name;
+    private String lastMessage;
+    private String date;
+//    private int creatorId;
+//    private int adminId;
+
+    public Group(int id, String name, String lastMessage, String date) {
+        this.id = id;
+        this.name = name;
+        this.lastMessage = lastMessage;
+        this.date = date;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public String getDate() {
+        return date;
+    }
+}
+
+class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder>{
+
+    static class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener{
+
+        private TextView rvId;
+        private TextView rvName;
+        private TextView rvLastMessage;
+        private TextView rvDate;
+        private Group group;
+        private Context context;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            rvId = itemView.findViewById(R.id.hided_group_id);
+            rvName = itemView.findViewById(R.id.group_name_text);
+            rvLastMessage = itemView.findViewById(R.id.last_group_message_text);
+            rvDate = itemView.findViewById(R.id.group_date_text);
+
+            context  = itemView.getContext();
+            itemView.setClickable(true);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(context, ChatActivity.class);
+            intent.putExtra(ChatActivity.EXTRA_HIDED_GROUP_ID, rvId.getText().toString());
+            ((Activity)context).startActivityForResult(intent, 0X02);
+
+        }
+
+        public void bind(Group groups){
+            this.group = groups;
+            rvId.setText(String.valueOf(groups.getId()));
+            rvName.setText(groups.getName());
+            rvLastMessage.setText(groups.getLastMessage());
+            rvDate.setText(groups.getDate());
+        }
+
+    }
+
+    private List<Group> groups;
+
+    public GroupsAdapter(List<Group> groups) {
+        super();
+        this.groups = groups;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.rvgroup_chats_list_item, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.bind(groups.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        return groups.size();
     }
 }
 

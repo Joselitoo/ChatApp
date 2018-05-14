@@ -23,6 +23,9 @@ import android.widget.TextView;
 import com.facebook.stetho.Stetho;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -32,13 +35,14 @@ public class NavigationMenu extends AppCompatActivity {
     private RecyclerView recyclerContainer;
     private UsersAdapter usersAdapter;
     private ChatsAdapter chatsAdapter;
-    private UsersAdapter groupsAdapter;
+    private GroupsAdapter groupsAdapter;
 
     private int my_id = ActualUser.id;
     private int total_users;
+    private int total_groups;
 
     private List<Chat> rv_chats_data = new ArrayList<>();
-    private List<User> rv_groups_data = new ArrayList<>();
+    private List<Group> rv_groups_data = new ArrayList<>();
     private List<User> rv_users_data = new ArrayList<>();
 
 
@@ -53,7 +57,7 @@ public class NavigationMenu extends AppCompatActivity {
                     return true;
 
                 case R.id.navigation_groups:
-                    recyclerContainer.setAdapter(groupsAdapter);
+                    fillGroupsAdapter();
                     return true;
 
                 case R.id.navigation_contacts:
@@ -73,13 +77,45 @@ public class NavigationMenu extends AppCompatActivity {
                         i,
                         db.usersDao().getFirstNameById(i),
                         db.usersDao().getLastNameById(i),
-                        db.messagesDao().getLastMessageOfContact(i, my_id)));
+                        db.messagesDao().getLastMessageOfContact(i, my_id),
+                        db.messagesDao().getLastDateOfContact(i, my_id)));
             }
         }
+        //Sorting by lastDate of lastMessage received or sent
+        Collections.sort(rv_chats_data, new Comparator<Chat>() {
+            @Override
+            public int compare(Chat o1, Chat o2) {
+                return o2.getDate().compareTo(o1.getDate());
+            }
+        });
+
         chatsAdapter = new ChatsAdapter(rv_chats_data);
         recyclerContainer.setAdapter(chatsAdapter);
     }
 
+    void fillGroupsAdapter(){
+        rv_groups_data.clear();
+        total_groups = db.groupsDao().getMaxId() + 1;
+        for (int i = 0; i < total_groups; i++){
+            if(db.groupMessagesDao().checkStartedGroup(i, my_id) > 0) {
+                rv_groups_data.add(new Group(
+                        i,
+                        db.groupsDao().getNameById(i),
+                        db.groupMessagesDao().getLastMessageByGroupId(i),
+                        "db.groupMessagesDao().getLastDateByGroupId(i)"));
+            }
+        }
+        //Sorting by lastDate of lastMessage received or sent
+//        Collections.sort(rv_groups_data, new Comparator<Group>() {
+//            @Override
+//            public int compare(Group o1, Group o2) {
+//                return o2.getDate().compareTo(o1.getDate());
+//            }
+//        });
+
+        groupsAdapter = new GroupsAdapter(rv_groups_data);
+        recyclerContainer.setAdapter(groupsAdapter);
+    }
 
     void fillContactsAdapter(){
         //I'm using Users adapter and class to fill the information since I've not created the Contacts table
@@ -117,7 +153,7 @@ public class NavigationMenu extends AppCompatActivity {
 
         fillChatsAdapter(); //Starts activity with chatsAdapter
 
-        groupsAdapter = new UsersAdapter(rv_groups_data);
+
 
 
 
@@ -132,8 +168,13 @@ public class NavigationMenu extends AppCompatActivity {
                     fillChatsAdapter();
                 }
                 break;
+            case 0x02:
+                if(resultCode == RESULT_OK){
+                    //fillGroupsAdapter();
+                }
+                break;
             default:
-                //otras activities
+                //other activities
                 break;
         }
     }
